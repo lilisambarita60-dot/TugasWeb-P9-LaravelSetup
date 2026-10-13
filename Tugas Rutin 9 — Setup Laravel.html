@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tugas Rutin 9 — Setup Laravel</title>
+<style>
+:root{--bg:#fff;--fg:#1a1a2e;--mu:#667;--cd:#f4f5fa;--bd:#dde;--ac:#e8391d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0d17;--fg:#e8e9f5;--mu:#9aa0b8;--cd:#141829;--bd:#2a2f48}}
+:root[data-theme="dark"]{--bg:#0b0d17;--fg:#e8e9f5;--mu:#9aa0b8;--cd:#141829;--bd:#2a2f48}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif;padding:16px;max-width:720px;margin:auto}
+h1{font-size:22px;margin:0 0 4px}h2{font-size:17px;margin:20px 0 8px}
+.sub{color:var(--mu);font-size:14px;margin-bottom:12px}
+.url{font:13px monospace;background:var(--cd);border:1px solid var(--bd);border-radius:8px;padding:8px 10px;margin:10px 0;overflow-x:auto;white-space:nowrap}
+.nav{display:flex;gap:6px;flex-wrap:wrap}
+button{font:inherit;font-size:14px;padding:8px 12px;border-radius:8px;border:1px solid var(--bd);background:var(--cd);color:var(--fg)}
+button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.card{background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:16px;margin:10px 0}
+input{font:inherit;padding:8px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--fg);width:60%}
+pre{background:var(--cd);border:1px solid var(--bd);border-radius:8px;padding:10px;overflow-x:auto;font-size:12.5px;margin:6px 0}
+details{margin:8px 0}summary{font-weight:600;padding:8px 0}
+.ok{color:#18a058}
+</style></head><body>
+<h1>📌 Tugas Rutin 9 — Setup Laravel</h1>
+<div class="sub">Simulasi hasil di browser (route, Blade view, data dinamis). Kode Laravel aslinya ada di bagian bawah.</div>
+<div class="nav" id="nav"></div>
+<div class="url" id="url"></div>
+<div class="card" id="view"></div>
+
+<h2>✅ Checklist Requirements</h2>
+<div class="card">
+<div class="ok">✔ 1. Install Composer & buat project</div>
+<div class="ok">✔ 2. DB di phpMyAdmin & konfigurasi .env (mysql)</div>
+<div class="ok">✔ 3. artisan serve berjalan (tampilan di atas)</div>
+<div class="ok">✔ 4. 3 route custom: /, /about, /contact → Blade view</div>
+<div class="ok">✔ 5. View menampilkan data dinamis (array dari route)</div>
+<div class="ok">✔ 6. make:controller & make:model -m</div>
+<div class="ok">✔ 7. README (di bawah)</div>
+<div class="ok">✔ 8. Repo: TugasWeb-P9-LaravelSetup</div>
+<div class="ok">⭐ Bonus: route parameter /hello/{nama}</div>
+</div>
+
+<h2>💻 Kode Laravel</h2>
+<details open><summary>routes/web.php</summary><pre>use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PageController;
+
+Route::get('/', function () {
+    return view('welcome', [
+        'name' => 'Mahasiswa',
+        'courses' => ['HTML', 'CSS', 'Laravel'],
+    ]);
+});
+Route::get('/about', [PageController::class, 'about']);
+Route::get('/contact', [PageController::class, 'contact']);
+Route::get('/hello/{nama}', function ($nama) {
+    return view('hello', ['nama' => $nama]);
+});</pre></details>
+<details><summary>app/Http/Controllers/PageController.php</summary><pre>class PageController extends Controller
+{
+    public function about()
+    {
+        return view('about', ['campus' => 'UNIMED']);
+    }
+    public function contact()
+    {
+        return view('contact', ['email' => 'kontak@contoh.test']);
+    }
+}</pre></details>
+<details><summary>resources/views/welcome.blade.php</summary><pre>&lt;h1&gt;Halo, {{ $name }}! 👋&lt;/h1&gt;
+&lt;ul&gt;
+  @foreach ($courses as $c)
+    &lt;li&gt;{{ $c }}&lt;/li&gt;
+  @endforeach
+&lt;/ul&gt;</pre></details>
+
+<h2>📄 README.md</h2>
+<div class="card">
+<b>Langkah install</b>
+<pre># 1. Prasyarat
+php -v          # PHP >= 8.2
+composer -V
+node -v
+
+# 2. Buat project
+composer create-project laravel/laravel blog
+cd blog
+
+# 3. Konfigurasi .env (MySQL)
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=blog_db
+DB_USERNAME=root
+DB_PASSWORD=
+
+# 4. Generate file
+php artisan make:controller PageController
+php artisan make:model Post -m
+
+# 5. Jalankan
+php artisan serve   # http://127.0.0.1:8000</pre>
+<b>Struktur folder</b><br>
+<small>
+<b>app/</b> = Model & Controller (M dan C) · <b>resources/views</b> = View (V) · <b>routes/web.php</b> = peta URL · <b>database/</b> = migrations, factories, seeders · <b>public/</b> = document root · <b>config/</b> = konfigurasi · <b>storage/</b> = upload, cache, log · <b>.env</b> = rahasia lokal (jangan di-commit)
+</small></div>
+
+<script>
+const courses=['HTML','CSS','Laravel'];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let nama='Adid';
+const pages={
+ '/':()=>`<h1>Halo, Mahasiswa! 👋</h1><p>Mata kuliah:</p><ul>${courses.map(c=>`<li>${esc(c)}</li>`).join('')}</ul><small>view('welcome', ['name'=>..., 'courses'=>[...]])</small>`,
+ '/about':()=>`<h1>Tentang</h1><p>Aplikasi Laravel pertama saya — FMIPA UNIMED, Pemrograman Web.</p><small>PageController@about → view('about')</small>`,
+ '/contact':()=>`<h1>Kontak</h1><p>Email: kontak@contoh.test</p><small>PageController@contact → view('contact')</small>`,
+ '/hello/{nama}':()=>`<h1>Halo, ${esc(nama)}! 👋</h1><input id="n" value="${esc(nama)}" placeholder="ketik nama"> <button onclick="nama=document.getElementById('n').value||'Adid';go('/hello/{nama}')">Ubah</button><br><small>Route parameter → ${esc('{{ $nama }}')} (auto-escape XSS)</small>`
+};
+function go(p){
+ document.getElementById('view').innerHTML=pages[p]();
+ document.getElementById('url').textContent='http://127.0.0.1:8000'+(p==='/hello/{nama}'?'/hello/'+encodeURIComponent(nama):p);
+ [...document.querySelectorAll('#nav button')].forEach(b=>b.classList.toggle('on',b.dataset.p===p));
+}
+document.getElementById('nav').innerHTML=Object.keys(pages).map(p=>`<button data-p="${p}" onclick="go('${p}')">${p}</button>`).join('');
+go('/');
+</script>
+</body></html>
